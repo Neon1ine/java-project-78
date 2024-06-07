@@ -1,0 +1,41 @@
+name: Java CI
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.7
+
+      - name: Check style & Generate code coverage report
+        run: |
+          cd $GITHUB_WORKSPACE/app/
+          chmod +x ./gradlew
+          make setup
+          make clean
+          make build
+          make install
+          make checkStyle
+          make build
+          make report
+
+      - name: Publish code coverage
+        uses: paambaati/codeclimate-action@v5.0.0
+        env:
+          CC_TEST_REPORTER_ID: 15a50bede32a347b1833505d9b6de90cad64a18c3ddf035591bf3c3af3a3b231
+          JACOCO_SOURCE_PATH: ${{github.workspace}}/app/src/main/java
+        with:
+          coverageCommand: ""
+          coverageLocations: ${{github.workspace}}/app/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
