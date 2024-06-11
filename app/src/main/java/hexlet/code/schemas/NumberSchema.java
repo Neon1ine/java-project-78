@@ -6,13 +6,11 @@ public class NumberSchema extends BaseSchema {
     boolean isRangeSet = false;
     private int[] range;
 
-    @Override
-    public boolean isValid(int number) {
-        boolean result = false;
+    public boolean isValid(int number) throws Exception {
         if (super.isValid(number)) {
-            result = isPositive() && isInRange();
+            return isPositive() && isInRange();
         }
-        return result;
+        return false;
     }
 
     public NumberSchema positive() {

@@ -5,13 +5,11 @@ public class StringSchema extends BaseSchema {
     private String subString;
     private int minLength = -1;
 
-    @Override
-    public boolean isValid(String str) {
-        boolean result = false;
+    public boolean isValid(String str) throws Exception {
         if (super.isValid(str)) {
-            result = isContains() && isInMinLength();
+            return isContains() && isInMinLength();
         }
-        return result;
+        return false;
     }
 
     public StringSchema contains(String newSubString) {

@@ -2,12 +2,14 @@ package hexlet.code;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ValidatorTest {
 
     @Test
-    public void testStringValidator() {
+    public void testStringValidator() throws Exception {
         var v = new Validator();
         var schema = v.string();
 
@@ -34,7 +36,7 @@ public class ValidatorTest {
     }
 
     @Test
-    public void testNumberValidator() {
+    public void testNumberValidator() throws Exception {
         var v = new Validator();
         var schema = v.number();
         assertThat(schema.isValid(5)).isEqualTo(true);
@@ -56,5 +58,24 @@ public class ValidatorTest {
         assertThat(schema.isValid(10)).isEqualTo(true);
         assertThat(schema.isValid(4)).isEqualTo(false);
         assertThat(schema.isValid(11)).isEqualTo(false);
+    }
+
+    @Test
+    public void testMapValidator() throws Exception {
+        var v = new Validator();
+        var schema = v.map();
+        assertThat(schema.isValid(null)).isEqualTo(true);
+        schema.required();
+        assertThat(schema.isValid(null)).isEqualTo(false);
+        assertThat(schema.isValid(new HashMap<>())).isEqualTo(true);
+        var data = new HashMap<String, String>();
+        data.put("key1", "value1");
+        assertThat(schema.isValid(data)).isEqualTo(true);
+
+        schema.sizeOf(2);
+        assertThat(schema.isValid(data)).isEqualTo(false);
+        data.put("key2", "value2");
+        assertThat(schema.isValid(data)).isEqualTo(true);
+
     }
 }
