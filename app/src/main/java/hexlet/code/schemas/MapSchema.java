@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 public class MapSchema extends BaseSchema {
 
     private int size;
+    private Map<String, BaseSchema> schemas;
 
     public MapSchema() {
         super.addPredicate("isMap", isMap());
@@ -31,5 +32,23 @@ public class MapSchema extends BaseSchema {
 
     public Predicate<Object> isMap() {
         return p -> (p instanceof Map);
+    }
+
+    public void shape(Map<String, BaseSchema> newSchemas) {
+        schemas = newSchemas;
+        super.addPredicate("isShapeCorrect", isShapeCorrect());
+    }
+
+    private Predicate<Object> isShapeCorrect() {
+        return p -> {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> map = mapper.convertValue(p, new TypeReference<>() { });
+            for (Map.Entry<String, BaseSchema> oneSchema : schemas.entrySet()) {
+                if (!oneSchema.getValue().isValid(map.get(oneSchema.getKey()))) {
+                    return false;
+                }
+            }
+            return true;
+        };
     }
 }
