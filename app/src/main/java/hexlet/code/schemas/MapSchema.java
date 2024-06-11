@@ -1,26 +1,35 @@
 package hexlet.code.schemas;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class MapSchema extends BaseSchema {
 
-    private int size = -1;
+    private int size;
 
-    public boolean isValid(Map<String, String> map) throws Exception {
-        if (super.isValid(map)) {
-            return isInSize();
-        }
-        return false;
+    public MapSchema() {
+        super.addPredicate("isMap", isMap());
     }
 
     public void sizeOf(int newSize) {
         size = newSize;
+        super.addPredicate("isInSize", isInSize());
     }
 
-    public boolean isInSize() {
-        if (size == -1) {
-            return true;
-        }
-        return map.size() == size;
+    public Predicate<Object> isInSize() {
+        ObjectMapper mapper = new ObjectMapper();
+        return p -> (mapper.convertValue(p, new TypeReference<Map<String, String>>() { }).size() == size);
+    }
+
+    public MapSchema required() {
+        super.isRequiredSet = true;
+        return this;
+    }
+
+    public Predicate<Object> isMap() {
+        return p -> (p instanceof Map);
     }
 }

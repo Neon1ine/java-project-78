@@ -1,7 +1,6 @@
 package hexlet.code;
 
 import org.junit.jupiter.api.Test;
-
 import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ValidatorTest {
 
     @Test
-    public void testStringValidator() throws Exception {
+    public void testStringValidator() {
         var v = new Validator();
         var schema = v.string();
 
@@ -36,7 +35,7 @@ public class ValidatorTest {
     }
 
     @Test
-    public void testNumberValidator() throws Exception {
+    public void testNumberValidator() {
         var v = new Validator();
         var schema = v.number();
         assertThat(schema.isValid(5)).isEqualTo(true);
@@ -61,7 +60,7 @@ public class ValidatorTest {
     }
 
     @Test
-    public void testMapValidator() throws Exception {
+    public void testMapValidator() {
         var v = new Validator();
         var schema = v.map();
         assertThat(schema.isValid(null)).isEqualTo(true);
@@ -76,6 +75,6 @@ public class ValidatorTest {
         assertThat(schema.isValid(data)).isEqualTo(false);
         data.put("key2", "value2");
         assertThat(schema.isValid(data)).isEqualTo(true);
-
     }
+
 }

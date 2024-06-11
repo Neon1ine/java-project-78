@@ -1,41 +1,46 @@
 package hexlet.code.schemas;
 
+import java.util.function.Predicate;
+
 public class NumberSchema extends BaseSchema {
 
-    boolean isPositiveSet = false;
-    boolean isRangeSet = false;
     private int[] range;
 
-    public boolean isValid(int number) throws Exception {
-        if (super.isValid(number)) {
-            return isPositive() && isInRange();
-        }
-        return false;
-    }
-
-    public NumberSchema positive() {
-        isPositiveSet = true;
-        return this;
-    }
-
-    public boolean isPositive() {
-        if (!isPositiveSet) {
-            return true;
-        }
-        return number > 0;
+    public NumberSchema() {
+        super.addPredicate("isNumber", isNumber());
     }
 
     public void range(int start, int end) {
         range = new int[2];
         range[0] = start;
         range[1] = end;
-        isRangeSet = true;
+        super.addPredicate("isInMinRange", isInMinRange());
+        super.addPredicate("isInMaxRange", isInMaxRange());
     }
 
-    public boolean isInRange() {
-        if (!isRangeSet) {
-            return true;
-        }
-        return number >= range[0] && number <= range[1];
+    public Predicate<Object> isInMinRange() {
+        return p -> (Integer.parseInt(p.toString()) >= range[0]);
+    }
+
+    public Predicate<Object> isInMaxRange() {
+        return p -> (Integer.parseInt(p.toString()) <= range[1]);
+    }
+
+    public NumberSchema positive() {
+        super.addPredicate("isPositive", isPositive());
+        return this;
+    }
+
+    public Predicate<Object> isPositive() {
+        return p -> (Integer.parseInt(p.toString()) > 0);
+    }
+
+    public NumberSchema required() {
+        super.isRequiredSet = true;
+        return this;
+    }
+
+    public Predicate<Object> isNumber() {
+        return p -> (p instanceof Integer);
     }
 }
