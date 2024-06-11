@@ -1,47 +1,41 @@
 package hexlet.code.schemas;
 
-public class StringSchema {
+public class StringSchema extends BaseSchema {
 
-    private boolean isRequiredSet;
-    private boolean isContainsSet;
-    private boolean isMinLengthSet;
     private String subString;
-    private int minLength;
+    private int minLength = -1;
 
-    public StringSchema() {
-        isRequiredSet = false;
-        isContainsSet = false;
-        isMinLengthSet = false;
-    }
-
+    @Override
     public boolean isValid(String str) {
-        boolean result = true;
-        if (isRequiredSet) {
-            result = !(str == null || str.isEmpty());
-        }
-        if (result && isContainsSet) {
-            result = str.contains(subString);
-        }
-        if (result && isMinLengthSet) {
-            result = str.length() > minLength;
+        boolean result = false;
+        if (super.isValid(str)) {
+            result = isContains() && isInMinLength();
         }
         return result;
     }
 
-    public void required() {
-        isRequiredSet = true;
-    }
-
     public StringSchema contains(String newSubString) {
-        isContainsSet = true;
         subString = newSubString;
         return this;
     }
 
+    public boolean isContains() {
+        if (subString == null) {
+            return true;
+        }
+        return line.contains(subString);
+    }
+
     public StringSchema minLength(int newMinLength) {
-        isMinLengthSet = true;
         minLength = newMinLength;
         return this;
+    }
+
+    public boolean isInMinLength() {
+        if (minLength == -1) {
+            return true;
+        }
+        return line.length() > minLength;
     }
 
 }
